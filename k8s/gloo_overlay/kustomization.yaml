@@ -1,0 +1,4 @@
+bases:
+  - ../gloo
+patchesStrategicMerge:
+  - patch.8-default-gateways.yaml

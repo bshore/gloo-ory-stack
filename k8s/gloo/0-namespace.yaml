@@ -1,0 +1,10 @@
+---
+# Source: gloo-ee/charts/gloo/templates/0-namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gloo-system
+  labels:
+    app: gloo
+  annotations:
+    "helm.sh/hook": pre-install

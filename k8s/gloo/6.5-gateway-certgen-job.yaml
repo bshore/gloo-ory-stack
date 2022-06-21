@@ -1,0 +1,95 @@
+---
+# Source: gloo-ee/charts/gloo/templates/6.5-gateway-certgen-job.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: gloo
+    gloo: rbac
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "5" # must be executed before cert-gen job
+  name: certgen
+  namespace: gloo-system
+---
+# Source: gloo-ee/charts/gloo/templates/6.5-gateway-certgen-job.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gloo-gateway-secret-create-vwc-update-gloo-system
+  labels:
+    app: gloo
+    gloo: rbac
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "5" # must be executed before cert-gen job
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create", "get", "update"]
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["validatingwebhookconfigurations"]
+  verbs: ["get", "update"]
+---
+# Source: gloo-ee/charts/gloo/templates/6.5-gateway-certgen-job.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gloo-gateway-secret-create-vwc-update-gloo-system
+  labels:
+    app: gloo
+    gloo: rbac
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "5" # must be executed before cert-gen job
+subjects:
+- kind: ServiceAccount
+  name: certgen
+  namespace: gloo-system
+roleRef:
+  kind: ClusterRole
+  name: gloo-gateway-secret-create-vwc-update-gloo-system
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: gloo-ee/charts/gloo/templates/6.5-gateway-certgen-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: gloo
+    gloo: gateway-certgen
+  name: gateway-certgen
+  namespace: gloo-system
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        gloo: gateway-certgen
+    spec:
+      serviceAccountName: certgen
+      restartPolicy: OnFailure
+      containers:
+        - image: quay.io/solo-io/certgen:1.8.23
+          imagePullPolicy: IfNotPresent
+          name: certgen
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10101
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          args:
+
+            - "--secret-name=gateway-validation-certs"
+            - "--svc-name=gateway"
+            - "--validating-webhook-configuration-name=gloo-gateway-validation-webhook-gloo-system"
+  # this feature is still in Alpha, which means it must be manually enabled in the k8s api server
+  # with --feature-gates="TTLAfterFinished=true". This flag also works with minikube start ...
+  # if the feature flag is not enabled in the k8s api server, this setting will be silently ignored at creation time
+  ttlSecondsAfterFinished: 60

@@ -1,0 +1,17 @@
+---
+# Source: gloo-ee/templates/0-redis-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gloo
+    gloo: redis
+  name: redis
+  namespace: gloo-system
+spec:
+  ports:
+    - name: redis
+      port: 6379
+      protocol: TCP
+  selector:
+    gloo: redis

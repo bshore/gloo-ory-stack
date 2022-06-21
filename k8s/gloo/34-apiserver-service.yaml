@@ -1,0 +1,20 @@
+---
+# Source: gloo-ee/templates/34-apiserver-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: apiserver-ui
+  namespace: gloo-system
+  labels:
+    app: gloo
+    gloo: apiserver-ui
+  annotations:
+    gloo.solo.io/h2_service: "true"
+spec:
+  ports:
+    - name: static
+      port: 8080
+      protocol: TCP
+  selector:
+    gloo: apiserver-ui
+  type: ClusterIP

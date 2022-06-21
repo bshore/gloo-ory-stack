@@ -1,0 +1,18 @@
+---
+# Source: gloo-ee/templates/35-apiserver-rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: apiserver-ui-role-binding
+  namespace: gloo-system
+  labels:
+    app: gloo
+    gloo: rbac
+subjects:
+  - kind: ServiceAccount
+    name: apiserver-ui
+    namespace: gloo-system
+roleRef:
+  kind: Role
+  name: apiserver-ui
+  apiGroup: rbac.authorization.k8s.io

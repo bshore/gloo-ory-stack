@@ -1,0 +1,94 @@
+---
+# Source: gloo-ee/templates/33-apiserver-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+  namespace: gloo-system
+  labels:
+    app: gloo
+    gloo: apiserver-ui
+spec:
+  selector:
+    matchLabels:
+      app: gloo
+      gloo: apiserver-ui
+  template:
+    metadata:
+      labels:
+        app: gloo
+        gloo: apiserver-ui
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9091"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: apiserver-ui
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10101
+      containers:
+        - name: apiserver-ui
+          image: quay.io/solo-io/grpcserver-ui:1.6.20
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: empty-cache
+              mountPath: /var/cache/nginx
+            - name: empty-run
+              mountPath: /var/run
+          ports:
+            - name: static
+              containerPort: 8080
+              protocol: TCP
+        - name: apiserver
+          image: quay.io/solo-io/grpcserver-ee:1.6.20
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: RBAC_NAMESPACED
+              value: "true"
+            - name: GRPC_PORT
+              value: '10101'
+            - name: START_STATS_SERVER
+              value: "true" 
+            - name: NO_AUTH
+              value: "1"
+            - name: GLOO_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: license
+                  key: license-key 
+          ports:
+            - name: grpcport
+              containerPort: 10101
+              protocol: TCP
+        - name: gloo-grpcserver-envoy
+          securityContext:
+            runAsUser: 101
+          env:
+            
+            - name: ENVOY_UID
+              value: "0"
+          image: quay.io/solo-io/grpcserver-envoy:1.6.20
+          imagePullPolicy: IfNotPresent
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080 
+            periodSeconds: 10
+            initialDelaySeconds: 5
+          volumeMounts:
+          - name: envoy-config
+            mountPath: /etc/envoy
+            readOnly: true  
+      volumes:
+        - name: empty-cache
+          emptyDir: {}
+        - name: empty-run
+          emptyDir: {}
+        - name: envoy-config
+          configMap:
+            name: default-apiserver-envoy-config

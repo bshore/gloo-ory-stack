@@ -1,0 +1,17 @@
+---
+# Source: gloo-ee/templates/22-extauth-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gloo
+    gloo: extauth
+  name: extauth
+  namespace: gloo-system
+spec:
+  ports:
+  - name: grpc
+    port: 8083
+    protocol: TCP
+  selector:
+    gloo: extauth

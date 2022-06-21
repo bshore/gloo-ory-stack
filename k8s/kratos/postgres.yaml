@@ -1,0 +1,100 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kratos-pg
+  namespace: kratos
+  labels:
+    app: kratos-pg
+spec:
+  selector:
+    matchLabels:
+      app: kratos-pg
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kratos-pg
+    spec:
+      containers:
+        - name: kratos-pg
+          image: 'postgres:14'
+          args:
+          env:
+            - name: POSTGRES_USER
+              value: dev
+            - name: PGUSER
+              value: dev
+            - name: POSTGRES_DB
+              value: kratosdb
+            - name: POSTGRES_INITDB_ARGS
+              value: ''
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POD_IP
+              valueFrom: { fieldRef: { fieldPath: status.podIP } }
+          ports:
+            - name: kratos-pg
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - exec pg_isready --host $POD_IP
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - exec pg_isready --host $POD_IP
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data/pgdata
+              subPath: kratos-pg-db
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: kratos-pg
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kratos-pg
+  labels:
+    app: kratos-pg
+spec:
+  accessModes:
+    - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kratos-pg
+  labels:
+    app: kratos-pg
+spec:
+  type: ClusterIP
+  ports:
+    - name: kratos-pg
+      port: 5432
+      targetPort: kratos-pg
+  selector:
+    app: kratos-pg

@@ -1,0 +1,17 @@
+---
+# Source: gloo-ee/templates/3-rate-limit-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gloo
+    gloo: rate-limit
+  name: rate-limit
+  namespace: gloo-system
+spec:
+  ports:
+  - name: grpc
+    port: 18081
+    protocol: TCP
+  selector:
+    gloo: rate-limit

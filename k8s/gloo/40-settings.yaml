@@ -1,0 +1,38 @@
+---
+# Source: gloo-ee/templates/40-settings.yaml
+apiVersion: gloo.solo.io/v1
+kind: Settings
+metadata:
+  labels:
+    app: gloo
+    gloo: settings
+  name: default
+  namespace: gloo-system
+spec:
+  gloo:
+    xdsBindAddr: "0.0.0.0:9977"
+    restXdsBindAddr: "0.0.0.0:9976"
+    enableRestEds: true
+    disableKubernetesDestinations: false
+    disableProxyGarbageCollection: false
+  discoveryNamespace: gloo-system
+  kubernetesArtifactSource: {}
+  kubernetesConfigSource: {}
+  kubernetesSecretSource: {}
+  refreshRate: 60s
+  gateway:
+    validation:
+      proxyValidationServerAddr: "gloo:9988"
+      alwaysAccept: true
+  discovery:
+    fdsMode: WHITELIST
+  extauth:
+    extauthzServerRef:
+      # arbitrarily default to the standalone deployment name even if we're using both
+      name: extauth
+      namespace: gloo-system
+    userIdHeader: "x-user-id"
+  ratelimitServer:
+    ratelimitServerRef:
+      name: rate-limit
+      namespace: gloo-system

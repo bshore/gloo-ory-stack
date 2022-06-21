@@ -1,0 +1,70 @@
+# built by ./refresh.sh
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - crds/enterprise.gloo.solo.io_v1_AuthConfig.yaml
+  - crds/gateway.solo.io_v1_Gateway.yaml
+  - crds/gateway.solo.io_v1_RouteOption.yaml
+  - crds/gateway.solo.io_v1_RouteTable.yaml
+  - crds/gateway.solo.io_v1_VirtualHostOption.yaml
+  - crds/gateway.solo.io_v1_VirtualService.yaml
+  - crds/gloo.solo.io_v1_Proxy.yaml
+  - crds/gloo.solo.io_v1_Settings.yaml
+  - crds/gloo.solo.io_v1_Upstream.yaml
+  - crds/gloo.solo.io_v1_UpstreamGroup.yaml
+  - crds/ratelimit_config.yaml
+  - ./0-namespace.yaml
+  - ./0-redis-service.yaml
+  - ./1-gloo-deployment.yaml
+  - ./1-redis-deployment.yaml
+  - ./2-gloo-service.yaml
+  - ./2-gloo-service-account.yaml
+  - ./2-rate-limit-deployment.yaml
+  - ./3-discovery-deployment.yaml
+  - ./3-discovery-service-account.yaml
+  - ./3-rate-limit-service.yaml
+  - ./4-ratelimit-upstream.yaml
+  - ./5-gateway-deployment.yaml
+  - ./5-gateway-service.yaml
+  - ./5-gateway-service-account.yaml
+  - ./5-gateway-validation-webhook-configuration.yaml
+  - ./6.5-gateway-certgen-job.yaml
+  - ./7-gateway-proxy-deployment.yaml
+  - ./8-default-gateways.yaml
+  - ./8-gateway-proxy-service.yaml
+  - ./8-gateway-proxy-service-account.yaml
+  - ./8-observability-rbac.yaml
+  - ./8-observability-service-account.yaml
+  - ./9-gateway-proxy-configmap.yaml
+  - ./9-observability-configmap.yaml
+  - ./9-observability-deployment.yaml
+  - ./9-observability-secret.yaml
+  - ./10-grafana-dashboards-config-map.yaml
+  - ./20-extauth-secret.yaml
+  - ./20-namespace-clusterrole-gateway.yaml
+  - ./21-extauth-deployment.yaml
+  - ./22-extauth-service.yaml
+  - ./23-extauth-upstream.yaml
+  - ./23-namespace-clusterrolebinding-gateway.yaml
+  - ./30-license-secret.yaml
+  - ./32-apiserver-service-account.yaml
+  - ./33-apiserver-deployment.yaml
+  - ./34-apiserver-service.yaml
+  - ./35-apiserver-rolebinding.yaml
+  - ./36-apiserver-role.yaml
+  - ./37-apiserver-envoy-configmap.yaml
+  - ./40-settings.yaml
+  - ./61-rolebinding-settings-user.yaml
+  - ./62-rate-limit-service-account.yaml
+  - ./63-extauth-service-account.yaml
+# patchesStrategicMerge:
+# - |-
+#   apiVersion: gloo.solo.io/v1
+#   kind: Settings
+#   metadata:
+#     name: default
+#     namespace: gloo-system
+#   spec:
+#     extauth:
+#       failureModeAllow: true

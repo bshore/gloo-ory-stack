@@ -1,0 +1,56 @@
+---
+# Source: gloo-ee/templates/2-rate-limit-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gloo
+    gloo: rate-limit
+  name: rate-limit
+  namespace: gloo-system
+spec:
+  selector:
+    matchLabels:
+      gloo: rate-limit
+  template:
+    metadata:
+      labels:
+        gloo: rate-limit
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9091"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: rate-limit
+      containers:
+        - image: quay.io/solo-io/rate-limit-ee:1.8.23
+          imagePullPolicy: IfNotPresent
+          name: rate-limit
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: GLOO_ADDRESS
+              value: gloo:9977
+            - name: START_STATS_SERVER
+              value: "true"
+            - name: REDIS_URL
+              value: redis:6379
+            - name: REDIS_SOCKET_TYPE
+              value: tcp
+            - name: READY_PORT_HTTP
+              value: "18080"
+            - name: READY_PATH_HTTP
+              value: "/ready"
+          readinessProbe:
+            httpGet:
+              port: 18080
+              path: "/ready"
+            initialDelaySeconds: 2
+            periodSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10101

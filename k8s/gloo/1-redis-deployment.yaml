@@ -1,0 +1,39 @@
+---
+# Source: gloo-ee/templates/1-redis-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gloo
+    gloo: redis
+  name: redis
+  namespace: gloo-system
+spec:
+  selector:
+    matchLabels:
+      gloo: redis
+  template:
+    metadata:
+      labels:
+        gloo: redis
+    spec:
+      containers:
+        - image: docker.io/redis:5
+          imagePullPolicy:  IfNotPresent
+          name: redis
+          ports:
+            - containerPort: 6379
+          env:
+            - name: MASTER
+              value: "true"
+          volumeMounts:
+            - mountPath: /redis-master-data
+              name: data
+      securityContext:
+        runAsNonRoot: true
+        runAsGroup: 999
+        fsGroup: 999
+        runAsUser: 999
+      volumes:
+        - name: data
+          emptyDir: {}

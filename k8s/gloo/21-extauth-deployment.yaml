@@ -1,0 +1,73 @@
+---
+# Source: gloo-ee/templates/21-extauth-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gloo
+    gloo: extauth
+  name: extauth
+  namespace: gloo-system
+spec:
+  selector:
+    matchLabels:
+      gloo: extauth
+  template:
+    metadata:
+      labels:
+        gloo: extauth
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9091"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: extauth
+      containers:
+      - image: quay.io/solo-io/extauth-ee:1.8.23
+        imagePullPolicy: IfNotPresent
+        name: extauth
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: SERVICE_NAME
+            value: "ext-auth"
+          - name: GLOO_ADDRESS
+            value: gloo:9977
+          - name: SIGNING_KEY
+            valueFrom:
+              secretKeyRef:
+                name: extauth-signing-key
+                key: signing-key
+          - name: SERVER_PORT
+            value: "8083"
+          - name: USER_ID_HEADER
+            value: "x-user-id"
+          - name: START_STATS_SERVER
+            value: "true"
+          - name: HEALTH_HTTP_PORT
+            value: "8082"
+          - name: HEALTH_HTTP_PATH
+            value: "/healthcheck"
+        readinessProbe:
+          httpGet:
+            port: 8082
+            path: "/healthcheck"
+          initialDelaySeconds: 2
+          periodSeconds: 5
+          failureThreshold: 2
+          successThreshold: 1
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10101
+        fsGroup: 10101
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    gloo: gateway-proxy
+                topologyKey: kubernetes.io/hostname

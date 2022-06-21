@@ -1,0 +1,5 @@
+namespace: kratos
+resources:
+  - configmap.yaml
+  - namespace.yaml
+  - postgres.yaml

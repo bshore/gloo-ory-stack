@@ -1,0 +1,24 @@
+---
+# Source: gloo-ee/templates/4-ratelimit-upstream.yaml
+apiVersion: gloo.solo.io/v1
+kind: Upstream
+metadata:
+  labels:
+    app: gloo
+    gloo: rate-limit
+  name: rate-limit
+  namespace: gloo-system
+spec:
+  healthChecks:
+  - timeout: 5s
+    interval: 1m
+    unhealthyThreshold: 5
+    healthyThreshold: 5
+    grpcHealthCheck:
+      serviceName: ratelimit
+  kube:
+    serviceName: rate-limit
+    serviceNamespace: gloo-system
+    servicePort:  18081
+    serviceSpec:
+      grpc: {}

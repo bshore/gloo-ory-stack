@@ -1,0 +1,28 @@
+# https://www.ory.sh/docs/kratos/reference/configuration
+kratos:
+  config:
+    dsn: postgres://dev@postgres.kratos:5432/kratosdbdb
+    secrets:
+      default:
+        - dolore occaecat nostrud Ut
+        - sit et commodoaute ut voluptate consectetur Duis
+    courier:
+      smtp:
+        connection_uri: smtps://foo:bar@my-mailserver:1234/?skip_ssl_verify=false
+    selfservice:
+      default_browser_return_url: https://some.localhost
+    identity:
+      default_schema_id: ''
+      schemas:
+        - id: employee
+          url: file:///schema/identity.schema.json
+
+deployment:
+  extraVolumes:
+    - name: kratos-configmap-volume
+      configMap:
+        name: kratos-configmap
+  extraVolumeMounts:
+    - name: kratos-configmap-volume
+      mountPath: /schema
+      readOnly: true

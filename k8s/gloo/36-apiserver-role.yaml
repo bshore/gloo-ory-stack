@@ -1,0 +1,40 @@
+---
+# Source: gloo-ee/templates/36-apiserver-role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: apiserver-ui
+  namespace: gloo-system
+  labels:
+    app: gloo
+    gloo: rbac
+rules:
+# Group 1: these rules apply to read-only and enterprise apiserver
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "namespaces", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["gloo.solo.io"]
+    resources: ["artifacts", "upstreams", "upstreamgroups", "proxies", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["gloo.solo.io"]
+    resources: ["settings"]
+    verbs: ["get", "list", "watch", "create"]
+  - apiGroups: ["gateway.solo.io"]
+    resources: ["gateways"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["gateway.solo.io"]
+    resources: ["virtualservices", "routetables"]
+    verbs: ["get", "list", "watch"]
+# Group 2: these rules only apply to the enterprise apiserver (enables mutations)
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["gloo.solo.io"]
+    resources: ["artifacts", "settings", "upstreams", "upstreamgroups", "proxies", "secrets"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["gateway.solo.io"]
+    resources: ["gateways"]
+    verbs: ["create", "update", "delete"]
+  - apiGroups: ["gateway.solo.io"]
+    resources: ["virtualservices", "routetables"]
+    verbs: ["create", "update", "delete"]

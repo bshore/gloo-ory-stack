@@ -1,0 +1,65 @@
+---
+# Source: gloo-ee/charts/gloo/templates/5-gateway-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gloo
+    gloo: gateway
+  name: gateway
+  namespace: gloo-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      gloo: gateway
+  template:
+    metadata:
+      labels:
+        gloo: gateway
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9091"
+        prometheus.io/scrape: "true"
+    spec:
+      serviceAccountName: gateway
+      containers:
+      - image: quay.io/solo-io/gateway:1.8.23
+        imagePullPolicy: IfNotPresent
+        name: gateway
+        ports:
+          - containerPort: 8443
+            name: https
+            protocol: TCP
+
+        securityContext:
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 10101
+          capabilities:
+            drop:
+            - ALL
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: START_STATS_SERVER
+            value: "true"
+          - name: VALIDATION_MUST_START
+            value: "true"
+        volumeMounts:
+          - mountPath: /etc/gateway/validation-certs
+            name: validation-certs
+        readinessProbe:
+          tcpSocket:
+            port: 8443
+          initialDelaySeconds: 1
+          periodSeconds: 2
+          failureThreshold: 10
+      volumes:
+        - name: validation-certs
+          secret:
+            defaultMode: 420
+            secretName: gateway-validation-certs

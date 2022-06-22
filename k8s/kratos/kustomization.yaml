@@ -3,3 +3,4 @@ resources:
   - configmap.yaml
   - namespace.yaml
   - postgres.yaml
+  - postgres-migrate.yaml

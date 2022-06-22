@@ -5,6 +5,14 @@ metadata:
   labels:
     app: kratos
 data:
+  kratos.yaml: |
+    kratos:
+      config:
+        identity:
+          default_schema_id: ''
+          schemas:
+            - id: employee
+              url: file:///schema/identity.schema.json
   identity.schema.json: |
     {
       "$id": "https://schemas.ory.sh/presets/kratos/quickstart/email-password/identity.schema.json",

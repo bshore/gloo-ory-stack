@@ -1,0 +1,37 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kratos-pg-migrate
+  labels:
+    app: 'kratos-pg-migrate'
+spec:
+  template:
+    metadata:
+      name: kratos-pg-migrate
+      labels:
+    spec:
+      containers:
+        - name: kratos-pg-migrate
+          image: oryd/kratos:v0.9.0
+          env:
+            - name: DSN
+              value: postgres://dev:password@kratos-pg.kratos:5432/kratosdb
+          command:
+            - kratos
+            - migrate
+            - sql
+            - --config
+            - /schema/kratos.yaml
+            - -e
+            - --yes
+          resources: {}
+          volumeMounts:
+            - name: migrate-config-volume
+              mountPath: /schema
+              readOnly: true
+      volumes:
+        - name: migrate-config-volume
+          configMap:
+            name: kratos-configmap
+      restartPolicy: Never

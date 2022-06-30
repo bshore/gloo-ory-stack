@@ -25,5 +25,5 @@ webhooks:
         resources: ['*']
     sideEffects: None
     admissionReviewVersions:
-      - v1beta1
+      - v1
     failurePolicy: Ignore

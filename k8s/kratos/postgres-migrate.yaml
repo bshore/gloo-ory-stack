@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: kratos-pg-migrate
+  namespace: kratos
   labels:
     app: 'kratos-pg-migrate'
 spec:

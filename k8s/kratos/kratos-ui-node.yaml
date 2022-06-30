@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kratos-ui-node
+  namespace: kratos
+  labels:
+    app: kratos-ui-node
+spec:
+  selector:
+    matchLabels:
+      app: kratos-ui-node
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kratos-ui-node
+    spec:
+      containers:
+        - name: kratos-ui-node
+          image: oryd/kratos-selfservice-ui-node:v0.10.1
+          args:
+          env:
+            - name: KRATOS_PUBLIC_URL
+              value: http://kratos.localhost/
+            - name: KRATOS_BROWSER_URL
+              value: http://kratos.localhost/
+          ports:
+            - name: kratos-ui-node
+              containerPort: 4433
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi

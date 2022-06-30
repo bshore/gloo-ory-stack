@@ -24,5 +24,6 @@ helm_resource(
   flags=['-f', './k8s/kratos/values.yaml'],
 )
 k8s_resource(workload='kratos-pg', labels=['kratos'])
+k8s_resource(workload='kratos-ui-node', labels=['kratos'])
 k8s_resource(workload='kratos-pg-migrate', labels=['kratos'], resource_deps=['kratos-pg'])
 k8s_resource(workload='kratos', labels=['kratos'], resource_deps=['kratos-pg-migrate'])

@@ -1,6 +1,8 @@
-namespace: kratos
 resources:
   - configmap.yaml
   - namespace.yaml
   - postgres.yaml
   - postgres-migrate.yaml
+  - kratos-ui-virtual-service.yaml
+  - kratos-ui-http.yaml
+  - kratos-ui-node.yaml

@@ -15,7 +15,7 @@ Start a minikube cluster with
 
 ```
 minikube start \
-  --kubernetes-version=v1.19.14 \
+  --kubernetes-version=v1.23.0 \
   --cpus max \
   --memory max \
   --driver=docker \

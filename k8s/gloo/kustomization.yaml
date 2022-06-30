@@ -14,6 +14,8 @@ resources:
   - crds/gloo.solo.io_v1_Upstream.yaml
   - crds/gloo.solo.io_v1_UpstreamGroup.yaml
   - crds/ratelimit_config.yaml
+  - crds/graphql.gloo.solo.io_v1beta1_GraphQLApi.yaml
+  - crds/gateway.solo.io_v1_MatchableHttpGateway.yaml
   - ./0-namespace.yaml
   - ./0-redis-service.yaml
   - ./1-gloo-deployment.yaml

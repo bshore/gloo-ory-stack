@@ -18,33 +18,33 @@ kratos:
       admin:
         base_url: http://0.0.0.0:4434/
     selfservice:
-      default_browser_return_url: http://0.0.0.0:4455
+      default_browser_return_url: http://kratos.localhost
       methods:
         password:
           enabled: true
       flows:
         error:
-          ui_url: http://0.0.0.0:4455/error
+          ui_url: http://kratos.localhost/error
         settings:
-          ui_url: http://0.0.0.0:4455/settings
+          ui_url: http://kratos.localhost/settings
           privileged_session_max_age: 15m
         recovery:
           enabled: true
-          ui_url: http://0.0.0.0:4455/recovery
+          ui_url: http://kratos.localhost/recovery
         verification:
           enabled: true
-          ui_url: http://0.0.0.0:4455/verification
+          ui_url: http://kratos.localhost/verification
           after:
-            default_browser_return_url: http://0.0.0.0:4455
+            default_browser_return_url: http://kratos.localhost
         logout:
           after:
-            default_browser_return_url: http://0.0.0.0:4455/login
+            default_browser_return_url: http://kratos.localhost/login
         login:
-          ui_url: http://0.0.0.0:4455/login
+          ui_url: http://kratos.localhost/login
           lifespan: 10m
         registration:
           lifespan: 10m
-          ui_url: http://0.0.0.0:4455/registration
+          ui_url: http://kratos.localhost/registration
           after:
             password:
               hooks:

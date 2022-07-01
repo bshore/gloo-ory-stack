@@ -3,6 +3,6 @@ resources:
   - namespace.yaml
   - postgres.yaml
   - postgres-migrate.yaml
-  - kratos-ui-virtual-service.yaml
-  - kratos-ui-http.yaml
+  - vs-kratos.yaml
+  - kratos-http.yaml
   - kratos-ui-node.yaml

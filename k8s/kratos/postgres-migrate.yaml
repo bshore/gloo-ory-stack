@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kratos-pg-migrate
-          image: oryd/kratos:v0.9.0
+          image: oryd/kratos:v0.10.1
           env:
             - name: DSN
               value: postgres://dev:password@kratos-pg.kratos:5432/kratosdb

@@ -28,7 +28,7 @@ spec:
               value: http://kratos.localhost/
           ports:
             - name: kratos-ui-node
-              containerPort: 4433
+              containerPort: 3000
           resources:
             requests:
               cpu: 100m

@@ -1,0 +1,76 @@
+---
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: kratos-public
+  namespace: gloo-system
+spec:
+  displayName: kratos-public
+  virtualHost:
+    domains:
+      - kratos.localhost
+    routes:
+      - matchers:
+          - prefix: /
+        routeAction:
+          single:
+            upstream:
+              name: kratos-kratos-public-clusterip-4433
+              namespace: gloo-system
+    options:
+      cors:
+        allowOrigin: ['*']
+        allowMethods: [GET, PUT, DELETE, POST, OPTIONS]
+        allowHeaders:
+          [
+            keep-alive,
+            user-agent,
+            cache-control,
+            content-type,
+            content-transfer-encoding,
+            custom-header-1,
+            x-accept-content-transfer-encoding,
+            x-accept-response-streaming,
+            x-user-agent,
+            x-grpc-web,
+            grpc-timeout,
+          ]
+        maxAge: '1728000'
+---
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: kratos-admin
+  namespace: gloo-system
+spec:
+  displayName: kratos-admin
+  virtualHost:
+    domains:
+      - kratos.localhost
+    routes:
+      - matchers:
+          - prefix: kratos-admin.localhost/
+        routeAction:
+          single:
+            upstream:
+              name: kratos-kratos-admin-clusterip-4434
+              namespace: gloo-system
+    options:
+      cors:
+        allowOrigin: ['*']
+        allowMethods: [GET, PUT, DELETE, POST, OPTIONS]
+        allowHeaders:
+          [
+            keep-alive,
+            user-agent,
+            cache-control,
+            content-type,
+            content-transfer-encoding,
+            custom-header-1,
+            x-accept-content-transfer-encoding,
+            x-accept-response-streaming,
+            x-user-agent,
+            x-grpc-web,
+            grpc-timeout,
+          ]
+        maxAge: '1728000'

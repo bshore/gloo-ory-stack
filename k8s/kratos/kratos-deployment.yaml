@@ -1,0 +1,118 @@
+# Source: kratos/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kratos
+  namespace: kratos
+  labels:
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/version: 'v0.9.0-alpha.3'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kratos
+      app.kubernetes.io/instance: kratos
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kratos
+        app.kubernetes.io/instance: kratos
+        app.kubernetes.io/version: 'v0.9.0-alpha.3'
+    spec:
+      automountServiceAccountToken: true
+      serviceAccountName: kratos
+      initContainers:
+        - name: kratos-pg-migrate
+          image: oryd/kratos:v0.10.1
+          env:
+            - name: DSN
+              value: postgres://dev:password@ory-db.postgres:5432/kratosdb
+          command:
+            - kratos
+            - migrate
+            - sql
+            - --config
+            - /etc/config/kratos.yaml
+            - -e
+            - --yes
+          resources: {}
+          volumeMounts:
+            - name: kratos-config-volume
+              mountPath: /etc/config
+              readOnly: true
+      containers:
+        - name: kratos
+          image: 'oryd/kratos:v0.9.0-alpha.3'
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /admin/health/alive
+              port: http-admin
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /admin/health/ready
+              port: http-admin
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 100
+          command: ['kratos']
+          args:
+            [
+              'serve',
+              'all',
+              '--dev',
+              '--config',
+              '/etc/config/kratos.yaml',
+              '--watch-courier',
+            ]
+          env:
+            - name: DSN
+              valueFrom:
+                secretKeyRef:
+                  name: kratos-secret
+                  key: dsn
+            - name: SECRETS_DEFAULT
+              valueFrom:
+                secretKeyRef:
+                  name: kratos-secret
+                  key: secretsDefault
+            - name: SECRETS_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: kratos-secret
+                  key: secretsCookie
+          ports:
+            - name: http-admin
+              containerPort: 4434
+              protocol: TCP
+            - name: http-public
+              containerPort: 4433
+              protocol: TCP
+          volumeMounts:
+            - name: kratos-config-volume
+              mountPath: /etc/config
+              readOnly: true
+            - name: kratos-identity-schema
+              mountPath: /etc/config/identity/
+              readOnly: true
+      volumes:
+        - name: kratos-config-volume
+          configMap:
+            name: kratos-config
+        - name: kratos-identity-schema
+          configMap:
+            name: kratos-identity

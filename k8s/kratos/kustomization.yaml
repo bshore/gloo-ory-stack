@@ -1,8 +1,22 @@
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+namespace: kratos
+
 resources:
-  - configmap.yaml
+  - kratos-deployment.yaml
+  - kratos-http-service.yaml
+  - kratos-svc-acct.yaml
   - namespace.yaml
-  - postgres.yaml
-  - postgres-migrate.yaml
-  - vs-kratos.yaml
-  - kratos-http.yaml
-  - kratos-ui-node.yaml
+
+secretGenerator:
+  - name: kratos-secret
+    envs:
+      - secrets/kratos.env
+
+configMapGenerator:
+  - name: kratos-config
+    files:
+      - kratos.yaml=config/kratos.yaml
+  - name: kratos-identity
+    files:
+      - identity.schema.json=config/identity.schema.json

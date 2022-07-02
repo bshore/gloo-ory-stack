@@ -28,6 +28,7 @@ Note: The Tilt extension `helm_resource` has a dependency on `python3` as a _nam
 
 Referencing this example for some config setup:
 https://github.com/ory/examples/tree/master/kratos-oathkeeper-kong
+https://github.com/ory/examples/tree/master/kratos-keto-oathkeeper-k8s
 
 #### Commands
 

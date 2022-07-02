@@ -1,0 +1,8 @@
+resources:
+  - configmap.yaml
+  - namespace.yaml
+  - postgres.yaml
+  - postgres-migrate.yaml
+  - vs-kratos.yaml
+  - kratos-http.yaml
+  - kratos-ui-node.yaml

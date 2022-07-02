@@ -17,7 +17,7 @@ spec:
           image: oryd/kratos:v0.10.1
           env:
             - name: DSN
-              value: postgres://dev:password@kratos-pg.kratos:5432/kratosdb
+              value: postgres://dev:password@ory-db.postgres:5432/kratosdb
           command:
             - kratos
             - migrate

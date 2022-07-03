@@ -6,7 +6,6 @@ Experimenting with Gloo Edge Proxy and the Ory Stack (Kratos, Hydra, Oathkeeper,
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/)
-- [Helm](https://helm.sh/docs/intro/install/)
 - [Tilt](https://docs.tilt.dev/install.html)
 
 ## Setup

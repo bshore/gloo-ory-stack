@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ory-db
+  name: postgres
   namespace: postgres
   labels:
-    app: ory-db
+    app: postgres
 spec:
   selector:
     matchLabels:
-      app: ory-db
+      app: postgres
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: ory-db
+        app: postgres
     spec:
       containers:
-        - name: ory-db
+        - name: postgres
           image: 'postgres:14'
           args:
           env:
@@ -37,7 +37,7 @@ spec:
             - name: POD_IP
               valueFrom: { fieldRef: { fieldPath: status.podIP } }
           ports:
-            - name: ory-db
+            - name: postgres
               containerPort: 5432
           livenessProbe:
             exec:
@@ -65,19 +65,19 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data/pgdata
-              subPath: ory-db-db
+              subPath: postgres-db
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: ory-db
+            claimName: postgres
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: ory-db
+  name: postgres
   namespace: postgres
   labels:
-    app: ory-db
+    app: postgres
 spec:
   accessModes:
     - 'ReadWriteOnce'
@@ -88,15 +88,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ory-db
+  name: postgres
   namespace: postgres
   labels:
-    app: ory-db
+    app: postgres
 spec:
   type: ClusterIP
   ports:
-    - name: ory-db
+    - name: postgres
       port: 5432
-      targetPort: ory-db
+      targetPort: postgres
   selector:
-    app: ory-db
+    app: postgres

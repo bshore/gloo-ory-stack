@@ -46,10 +46,10 @@ spec:
   displayName: kratos-admin
   virtualHost:
     domains:
-      - kratos.localhost
+      - kratos-admin.localhost
     routes:
       - matchers:
-          - prefix: kratos-admin.localhost/
+          - prefix: /
         routeAction:
           single:
             upstream:

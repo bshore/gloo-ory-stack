@@ -10,7 +10,7 @@ serve:
 
 session:
   cookie:
-    domain: kratos.localhost
+    domain: sso.localhost
   whoami:
     required_aal: highest_available
 
@@ -27,7 +27,7 @@ selfservice:
     totp:
       enabled: true
       config:
-        issuer: kratos.localhost
+        issuer: sso.localhost
     lookup_secret:
       enabled: true
     webauthn:

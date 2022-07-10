@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kratos-pg
-  namespace: kratos
+  name: postgres
+  namespace: postgres
   labels:
-    app: kratos-pg
+    app: postgres
 spec:
   selector:
     matchLabels:
-      app: kratos-pg
+      app: postgres
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: kratos-pg
+        app: postgres
     spec:
       containers:
-        - name: kratos-pg
+        - name: postgres
           image: 'postgres:14'
           args:
           env:
@@ -37,7 +37,7 @@ spec:
             - name: POD_IP
               valueFrom: { fieldRef: { fieldPath: status.podIP } }
           ports:
-            - name: kratos-pg
+            - name: postgres
               containerPort: 5432
           livenessProbe:
             exec:
@@ -65,19 +65,19 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data/pgdata
-              subPath: kratos-pg-db
+              subPath: postgres-db
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: kratos-pg
+            claimName: postgres
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: kratos-pg
-  namespace: kratos
+  name: postgres
+  namespace: postgres
   labels:
-    app: kratos-pg
+    app: postgres
 spec:
   accessModes:
     - 'ReadWriteOnce'
@@ -88,15 +88,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kratos-pg
-  namespace: kratos
+  name: postgres
+  namespace: postgres
   labels:
-    app: kratos-pg
+    app: postgres
 spec:
   type: ClusterIP
   ports:
-    - name: kratos-pg
+    - name: postgres
       port: 5432
-      targetPort: kratos-pg
+      targetPort: postgres
   selector:
-    app: kratos-pg
+    app: postgres

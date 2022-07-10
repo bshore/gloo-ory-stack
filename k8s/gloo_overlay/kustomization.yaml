@@ -1,4 +1,7 @@
 bases:
   - ../gloo
+resources:
+  - vs-kratos.yaml
+  - vs-selfservice.yaml
 patchesStrategicMerge:
   - patch.8-default-gateways.yaml

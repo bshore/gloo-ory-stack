@@ -6,7 +6,6 @@ Experimenting with Gloo Edge Proxy and the Ory Stack (Kratos, Hydra, Oathkeeper,
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Minikube](https://minikube.sigs.k8s.io/docs/start/)
-- [Helm](https://helm.sh/docs/intro/install/)
 - [Tilt](https://docs.tilt.dev/install.html)
 
 ## Setup
@@ -28,6 +27,7 @@ Note: The Tilt extension `helm_resource` has a dependency on `python3` as a _nam
 
 Referencing this example for some config setup:
 https://github.com/ory/examples/tree/master/kratos-oathkeeper-kong
+https://github.com/ory/examples/tree/master/kratos-keto-oathkeeper-k8s
 
 #### Commands
 

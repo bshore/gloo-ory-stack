@@ -2,11 +2,11 @@ version: v0.9.0-alpha.3
 dsn: fromEnv
 serve:
   public:
-    base_url: http://sso.localhost/.ory/kratos/public/
+    base_url: http://kratos.localhost/
     cors:
       enabled: true
   admin:
-    base_url: http://sso-admin.localhost/
+    base_url: http://kratos-admin.localhost/
 
 session:
   cookie:

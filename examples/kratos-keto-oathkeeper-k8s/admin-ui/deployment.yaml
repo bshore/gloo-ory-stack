@@ -24,7 +24,7 @@ spec:
             defaultMode: 0777
       containers:
         - name: admin-ui
-          image: "pingouin/react-admin-kratos:latest"
+          image: 'pingouin/react-admin-kratos:latest'
           imagePullPolicy: Always
           envFrom:
             - configMapRef:

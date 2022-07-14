@@ -23,12 +23,6 @@ minikube start \
 
 Run `tilt up` from the repo root and hit spacebar to open the UI
 
-Note: The Tilt extension `helm_resource` has a dependency on `python3` as a _named_ binary/exe, which isn't really a thing on Windows. You may have Python 3+ installed (I have Python 3.10.x), to solve this I made a copy of my `python.exe` and named it `python3.exe` which seemed to work.
-
-Referencing this example for some config setup:
-https://github.com/ory/examples/tree/master/kratos-oathkeeper-kong
-https://github.com/ory/examples/tree/master/kratos-keto-oathkeeper-k8s
-
 #### Commands
 
 - Connect to postgres

@@ -26,5 +26,5 @@ Run `tilt up` from the repo root and hit spacebar to open the UI
 #### Commands
 
 - Connect to postgres
-  - `kubectl -n kratos get pods` (copy the kratos-pg pod name)
-  - `kubectl -n kratos exec -it {copied pod name} -- psql postgres://dev:password@localhost:5432/kratosdb`
+  - `kubectl -n postgres get pods` (copy the postgres pod name)
+  - `kubectl -n postgres exec -it {copied pod name} -- psql postgres://dev:password@localhost:5432/kratosdb`
